@@ -1,6 +1,5 @@
 import pygame
 import pygame_gui
-import moviepy.editor
 
 
 class IDraw:
@@ -16,11 +15,13 @@ class IDraw:
 class PlayDrawer(IDraw):
     def __init__(self):
         super().__init__()
+        self.video = None
+
+    def update_playing_song(self, video):
+        self.video = video
 
     def draw(self):
-        video = moviepy.editor.VideoFileClip(
-            "songs/The Winner Takes It All.mp4")
-        video.preview()
+        self.video.draw_to(self.display, (0, 0))
 
 
 class MainMenuDrawer(IDraw):

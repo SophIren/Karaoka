@@ -5,7 +5,7 @@ from drawers import PlayDrawer, MainMenuDrawer
 from controllers import PlayController, MainMenuController
 
 
-class Controller:
+class Driver:
     def __init__(self):
         main_menu_drawer = MainMenuDrawer()
         main_menu_controller = MainMenuController(self, main_menu_drawer)
@@ -52,3 +52,4 @@ class Controller:
         self.current_drawer, self.current_controller = \
             self.states[self.current_state_name]
         self.current_ui_manager = self.current_drawer.ui_manager
+

@@ -1,12 +1,12 @@
 import pygame
-from driver import Controller
+from driver import Driver
 
 
 def main():
     pygame.init()
     pygame.display.set_caption("Karaoka")
 
-    app = Controller()
+    app = Driver()
     app.main()
 
 
