@@ -16,10 +16,10 @@ class IDraw:
 class PlayDrawer(IDraw):
     def __init__(self):
         super().__init__()
-        self.draw()
 
     def draw(self):
-        video = moviepy.editor.VideoFileClip("songs/GiveYouUp.mp4")
+        video = moviepy.editor.VideoFileClip(
+            "songs/The Winner Takes It All.mp4")
         video.preview()
 
 
@@ -34,6 +34,12 @@ class MainMenuDrawer(IDraw):
                                                'GUI/theme.json')
         self.background = pygame.image.load("GUI/bg.jpg")
 
+        self.song_selector = pygame_gui.elements.UISelectionList(
+            relative_rect=pygame.Rect((100, 100), (200, 100)),
+            item_list=['song1', 'song2'],
+            manager=self.ui_manager
+        )
+
         self.init_buttons()
 
     def init_buttons(self):
@@ -46,9 +52,9 @@ class MainMenuDrawer(IDraw):
             text='PLAY',
             manager=self.ui_manager,
             container=buttons_layout)
-        self.add_song_button = pygame_gui.elements.UIButton(
+        self.refresh_button = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect((0, 80), (135, 50)),
-            text='ADD SONG',
+            text='REFRESH',
             manager=self.ui_manager,
             container=buttons_layout
         )
@@ -58,11 +64,12 @@ class MainMenuDrawer(IDraw):
             manager=self.ui_manager,
             container=buttons_layout
         )
-        self.buttons = {
-            'PLAY': self.play_button,
-            'ADD_SONG': self.add_song_button,
-            'EXIT': self.exit_button
-        }
+        self.buttons['PLAY'] = self.play_button
+        self.buttons['REFRESH'] = self.refresh_button
+        self.buttons['EXIT'] = self.exit_button
+
+    def update_song_selector(self, song_names):
+        self.song_selector.set_item_list(song_names)
 
     def draw(self):
         self.display.blit(self.background, (0, 0))

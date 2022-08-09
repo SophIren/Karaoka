@@ -15,5 +15,17 @@
       "size": "20",
       "regular_path": "C:/Windows/Fonts/comic.ttf"
     }
+  },
+  "selection_list": {
+    "misc": {
+      "list_item_height": "30"
+    }
+  },
+  "selection_list.@selection_list_item": {
+    "font": {
+      "name": "comic",
+      "size": "10",
+      "regular_path": "C:/Windows/Fonts/comic.ttf"
+    }
   }
 }
