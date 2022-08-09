@@ -4,6 +4,7 @@ from driver import Driver
 
 def main():
     pygame.init()
+    pygame.display.set_mode((933, 700))
     pygame.display.set_caption("Karaoka")
 
     app = Driver()

@@ -16,13 +16,10 @@ class IController:
 class MainMenuController(IController):
     def __init__(self, driver, drawer):
         super().__init__(driver, drawer)
-        self.song_folder_path = None
+        self.song_folder_path = 'songs/'
         self.refresh_songs()
 
     def handle_pressed_button(self, event):
-        if event.ui_element == self.drawer.buttons['EXIT']:
-            self.driver.done = True
-
         if event.ui_element == self.drawer.buttons['PLAY']:
             selected_song = self.drawer.song_selector.get_single_selection()
             if selected_song is not None:
@@ -40,10 +37,9 @@ class MainMenuController(IController):
         play_controller.play_video()
         self.driver.change_state('PLAY')
 
-    def refresh_songs(self, path='songs/'):
-        self.song_folder_path = path
-
-        song_names = list(map(os.path.basename, glob.glob(path + '/*')))
+    def refresh_songs(self):
+        song_names = list(map(os.path.basename,
+                              glob.glob(self.song_folder_path + '/*')))
         self.drawer.update_song_selector(song_names)
 
 
@@ -58,6 +54,10 @@ class PlayController(IController):
 
     def play_video(self):
         self.video.play()
+        self.fit_display_to_video()
+
+    def fit_display_to_video(self):
+        self.drawer.fit_display_to_video()
 
     def handle_pressed_button(self, event):
         pass
