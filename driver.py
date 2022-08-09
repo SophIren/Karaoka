@@ -8,14 +8,15 @@ from controllers import PlayController, MainMenuController
 class Driver:
     def __init__(self):
         main_menu_drawer = MainMenuDrawer()
-        main_menu_controller = MainMenuController(self, main_menu_drawer)
+        self.main_menu_controller = MainMenuController(self,
+                                                       main_menu_drawer)
 
         play_drawer = PlayDrawer()
-        play_controller = PlayController(self, play_drawer)
+        self.play_controller = PlayController(self, play_drawer)
 
         self.states = {
-            "MAIN_MENU": (main_menu_drawer, main_menu_controller),
-            "PLAY": (play_drawer, play_controller)
+            "MAIN_MENU": (main_menu_drawer, self.main_menu_controller),
+            "PLAY": (play_drawer, self.play_controller)
         }
         self.current_state_name = "MAIN_MENU"
         self.current_drawer, self.current_controller = \
@@ -53,3 +54,11 @@ class Driver:
             self.states[self.current_state_name]
         self.current_ui_manager = self.current_drawer.ui_manager
 
+    def start_playing(self, song_path):
+        self.play_controller.update_playing_song(song_path)
+        self.play_controller.play_video()
+        self.change_state('PLAY')
+
+    def stop_playing(self):
+        self.change_state('MAIN_MENU')
+        self.main_menu_controller.drawer.fit_display()

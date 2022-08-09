@@ -23,19 +23,12 @@ class MainMenuController(IController):
         if event.ui_element == self.drawer.buttons['PLAY']:
             selected_song = self.drawer.song_selector.get_single_selection()
             if selected_song is not None:
-                self.start_playing()
+                self.driver.start_playing(
+                    os.path.join(self.song_folder_path, selected_song)
+                )
 
         if event.ui_element == self.drawer.buttons['REFRESH']:
             self.refresh_songs()
-
-    def start_playing(self):
-        play_controller = self.driver.states['PLAY'][1]
-        play_controller.update_playing_song(
-            os.path.join(self.song_folder_path,
-                         self.drawer.song_selector.get_single_selection())
-        )
-        play_controller.play_video()
-        self.driver.change_state('PLAY')
 
     def refresh_songs(self):
         song_names = list(map(os.path.basename,
@@ -54,10 +47,12 @@ class PlayController(IController):
 
     def play_video(self):
         self.video.play()
-        self.fit_display_to_video()
+        self.drawer.fit_display()
 
-    def fit_display_to_video(self):
-        self.drawer.fit_display_to_video()
+    def stop_video(self):
+        self.video.stop()
 
     def handle_pressed_button(self, event):
-        pass
+        if event.ui_element == self.drawer.buttons['BACK']:
+            self.stop_video()
+            self.driver.stop_playing()

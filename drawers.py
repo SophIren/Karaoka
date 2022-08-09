@@ -16,6 +16,9 @@ class IDraw:
     def draw(self):
         pass
 
+    def fit_display(self):
+        self.update_ui_manager()
+
 
 class PlayDrawer(IDraw):
     def __init__(self):
@@ -24,7 +27,7 @@ class PlayDrawer(IDraw):
         self.video = None
         self.back_button = None
 
-    def fit_display_to_video(self):
+    def fit_display(self):
         x_size, y_size = self.video.get_size()
 
         pygame.display.set_mode((x_size, y_size))
@@ -50,6 +53,7 @@ class MainMenuDrawer(IDraw):
         super().__init__()
 
         self.background = pygame.image.load("GUI/bg.jpg")
+        pygame.display.set_mode(self.background.get_size())
 
         self.song_selector = pygame_gui.elements.UISelectionList(
             relative_rect=pygame.Rect((100, 100), (200, 100)),
@@ -57,6 +61,8 @@ class MainMenuDrawer(IDraw):
             manager=self.ui_manager
         )
 
+        self.play_button = None
+        self.refresh_button = None
         self.init_buttons()
 
     def init_buttons(self):
@@ -77,6 +83,9 @@ class MainMenuDrawer(IDraw):
         )
         self.buttons['PLAY'] = self.play_button
         self.buttons['REFRESH'] = self.refresh_button
+
+    def fit_display(self):
+        pygame.display.set_mode(self.background.get_size())
 
     def update_song_selector(self, song_names):
         self.song_selector.set_item_list(song_names)
