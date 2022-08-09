@@ -24,16 +24,21 @@ class MainMenuController(IController):
             self.driver.done = True
 
         if event.ui_element == self.drawer.buttons['PLAY']:
-            play_controller = self.driver.states['PLAY'][1]
-            play_controller.update_playing_song(
-                os.path.join(self.song_folder_path,
-                             self.drawer.song_selector.get_single_selection())
-            )
-            play_controller.play_video()
-            self.driver.change_state('PLAY')
+            selected_song = self.drawer.song_selector.get_single_selection()
+            if selected_song is not None:
+                self.start_playing()
 
         if event.ui_element == self.drawer.buttons['REFRESH']:
             self.refresh_songs()
+
+    def start_playing(self):
+        play_controller = self.driver.states['PLAY'][1]
+        play_controller.update_playing_song(
+            os.path.join(self.song_folder_path,
+                         self.drawer.song_selector.get_single_selection())
+        )
+        play_controller.play_video()
+        self.driver.change_state('PLAY')
 
     def refresh_songs(self, path='songs/'):
         self.song_folder_path = path
