@@ -1,9 +1,10 @@
 {
   "button": {
     "colours": {
-      "normal_bg": "#c1a7b0,#7d3865,45",
+      "normal_bg": "#c1a7b0E0,#7d3865E0,45",
       "hovered_bg": "#c1a7b0,#a89b28,45",
       "active_bg": "#f0f1f6",
+      "selected_bg": "#16558F",
       "normal_text": "#FFFFFF",
       "hovered_text": "#FFFFFF",
       "selected_text": "#FFFFFF",
@@ -17,15 +18,24 @@
     }
   },
   "selection_list": {
+    "colours": {
+      "dark_bg": "#00000000",
+      "normal_border": "#000000"
+    },
     "misc": {
-      "list_item_height": "30"
+      "list_item_height": "35",
+      "border_width": "1"
     }
   },
   "selection_list.@selection_list_item": {
     "font": {
       "name": "comic",
-      "size": "10",
+      "size": "15",
       "regular_path": "C:/Windows/Fonts/comic.ttf"
+    },
+    "colours": {
+      "active_bg": "#c1a7b0,#a89b28,45",
+      "active_text": "#FFFFFF"
     }
   }
 }

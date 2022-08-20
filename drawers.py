@@ -54,33 +54,58 @@ class MainMenuDrawer(IDraw):
 
         self.background = pygame.image.load("GUI/bg.jpg")
         pygame.display.set_mode(self.background.get_size())
+        self.update_ui_manager()
 
-        self.song_selector = pygame_gui.elements.UISelectionList(
-            relative_rect=pygame.Rect((100, 100), (200, 100)),
-            item_list=[],
+        self.general_layout = pygame_gui.core.UIContainer(
+            relative_rect=pygame.Rect((450, 100, 400, 550)),
             manager=self.ui_manager
         )
 
         self.play_button = None
         self.refresh_button = None
+        self.song_selector = None
+        self.init_song_selector()
         self.init_buttons()
 
-    def init_buttons(self):
-        buttons_layout = pygame_gui.core.UIContainer(
-            relative_rect=pygame.Rect((480, 180), (135, 220)),
-            manager=self.ui_manager
+    def init_song_selector(self):
+        song_selector_rect = pygame.Rect((0, 0), (400, 500))
+        song_selector_rect.bottomleft = (0, 0)
+        self.song_selector = pygame_gui.elements.UISelectionList(
+            relative_rect=song_selector_rect,
+            item_list=[],
+            manager=self.ui_manager,
+            container=self.general_layout,
+            anchors={
+                'left': 'left',
+                'right': 'right',
+                'top': 'bottom',
+                'bottom': 'bottom'
+            }
         )
+
+    def init_buttons(self):
+        play_button_rect = pygame.Rect(0, 0, 135, 50)
+        play_button_rect.topright = (0, 0)
         self.play_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((0, 0), (135, 50)),
+            relative_rect=play_button_rect,
             text='PLAY',
             manager=self.ui_manager,
-            container=buttons_layout)
+            container=self.general_layout,
+            anchors={
+                'left': 'right',
+                'right': 'right',
+                'top': 'top',
+                'bottom': 'bottom'
+            }
+        )
+
         self.refresh_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((0, 80), (135, 50)),
+            relative_rect=pygame.Rect((0, 0), (135, 50)),
             text='REFRESH',
             manager=self.ui_manager,
-            container=buttons_layout
+            container=self.general_layout,
         )
+
         self.buttons['PLAY'] = self.play_button
         self.buttons['REFRESH'] = self.refresh_button
 
@@ -88,6 +113,8 @@ class MainMenuDrawer(IDraw):
         pygame.display.set_mode(self.background.get_size())
 
     def update_song_selector(self, song_names):
+        self.song_selector.set_dimensions(
+            (400, min(500, len(song_names) * 35 + 6)))
         self.song_selector.set_item_list(song_names)
 
     def draw(self):
