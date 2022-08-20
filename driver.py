@@ -55,9 +55,12 @@ class Driver:
         self.current_ui_manager = self.current_drawer.ui_manager
 
     def start_playing(self, song_path):
-        self.play_controller.update_playing_song(song_path)
-        self.play_controller.play_video()
-        self.change_state('PLAY')
+        try:
+            self.play_controller.update_playing_song(song_path)
+            self.play_controller.play_video()
+            self.change_state('PLAY')
+        except ZeroDivisionError:  # Invalid file
+            pass
 
     def stop_playing(self):
         self.change_state('MAIN_MENU')
