@@ -1,7 +1,8 @@
 import glob
 import os.path
 
-from pygamevideo import Video
+from playing import VideoPlayer
+from recording import Recorder
 
 
 class IController:
@@ -40,19 +41,28 @@ class PlayController(IController):
     def __init__(self, driver, drawer):
         super().__init__(driver, drawer)
         self.video = None
+        self.recorder = Recorder()
 
     def update_playing_song(self, path):
-        self.video = Video(path)
+        self.video = VideoPlayer(path)
         self.drawer.update_playing_song(self.video)
 
     def play_video(self):
         self.video.play()
         self.drawer.fit_display()
 
+    def record_audio(self):
+        self.recorder.start_recording()
+
     def stop_video(self):
         self.video.stop()
+
+    def stop_recording(self):
+        self.recorder.stop_recording()
+        self.recorder.save_recorded_frames()
 
     def handle_pressed_button(self, event):
         if event.ui_element == self.drawer.buttons['BACK']:
             self.stop_video()
+            self.stop_recording()
             self.driver.stop_playing()

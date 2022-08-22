@@ -58,6 +58,7 @@ class Driver:
         try:
             self.play_controller.update_playing_song(song_path)
             self.play_controller.play_video()
+            self.play_controller.record_audio()
             self.change_state('PLAY')
         except ZeroDivisionError:  # Invalid file
             pass

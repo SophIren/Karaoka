@@ -187,3 +187,5 @@ fabric.properties
 test.py
 
 songs
+
+output.wav
