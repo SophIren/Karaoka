@@ -37,7 +37,6 @@ class VideoPlayer:
 
         elapsed_frames = int((time.time() - self.start_time) * self.fps)
         if self.current_frame >= elapsed_frames:
-            print(self.current_frame)
             return
 
         for _ in range(elapsed_frames - self.current_frame):
