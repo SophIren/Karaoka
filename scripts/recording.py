@@ -43,7 +43,7 @@ class Recorder:
         loudness_difference = target_dbfs - sound.dBFS
         return sound.apply_gain(loudness_difference)
 
-    def save_recorded_frames(self, file_name='output.wav'):
+    def save_overlapped(self, file_name='output.wav'):
         mic_segment = self.set_loudness(
             AudioSegment(b''.join(self.mic_frames),
                          sample_width=self.SAMPLE_WIDTH,
@@ -99,4 +99,4 @@ if __name__ == "__main__":
         time.sleep(1)
         print(_)
     rec.stop_recording()
-    rec.save_recorded_frames()
+    rec.save_overlapped()

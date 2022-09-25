@@ -93,7 +93,7 @@ class PlayController(IController):
     def deactivate(self):
         self.media_player.close_player()
         self.recorder.stop_recording()
-        self.recorder.save_recorded_frames()
+        self.recorder.save_overlapped()
 
     def handle_pressed_button(self, event):
         if event.ui_element == self.drawer.buttons['BACK']:
