@@ -2,7 +2,7 @@ import time
 import pygame
 import numpy
 import cv2
-from ffpyplayer.player import MediaPlayer
+import vlc
 
 
 class VideoPlayer:
@@ -12,7 +12,11 @@ class VideoPlayer:
         self.current_frame = 0
 
         self.vid_cap = cv2.VideoCapture(filepath)
-        self.audio_player = MediaPlayer(filepath)
+
+        instance = vlc.Instance('--no-video')
+        self.media_player = instance.media_player_new()
+        media = instance.media_new(filepath)
+        self.media_player.set_media(media)
 
         self.fps = self.vid_cap.get(cv2.CAP_PROP_FPS)
         self.frame_width = int(self.vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -21,15 +25,18 @@ class VideoPlayer:
         self.frame_surf = pygame.Surface((self.frame_width, self.frame_height))
 
     def play(self):
-        if not self.is_playing:
-            self.is_playing = True
-            self.start_time = time.time()
+        if self.is_playing:
+            return
+        self.media_player.play()
+        self.is_playing = True
+        self.start_time = time.time()
 
     def stop(self):
-        if self.is_playing:
-            self.is_playing = False
-            self.audio_player.close_player()
-            self.vid_cap.release()
+        if not self.is_playing:
+            return
+        self.is_playing = False
+        self.media_player.stop()
+        self.vid_cap.release()
 
     def get_frame(self):
         if not self.is_playing:
@@ -39,9 +46,9 @@ class VideoPlayer:
         if self.current_frame >= elapsed_frames:
             return
 
+        frame = []
         for _ in range(elapsed_frames - self.current_frame):
             success, frame = self.vid_cap.read()
-            # audio_frame, val = self.ff.get_frame()
 
         self.current_frame = elapsed_frames
         pygame.pixelcopy.array_to_surface(

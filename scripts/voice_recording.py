@@ -87,11 +87,11 @@ class Recorder:
         song_segment = AudioSegment.from_file(self.song_path)
 
         print(mic_segment.dBFS, song_segment.dBFS)
-        avg_dbfs = self.get_average_dbfs(mic_segment.dBFS, song_segment.dBFS)
+        avg_dBFS = self.get_average_dbfs(mic_segment.dBFS, song_segment.dBFS)
         if mic_segment.dBFS > -60:
-            mic_segment = self.set_loudness(mic_segment, avg_dbfs)
+            mic_segment = self.set_loudness(mic_segment, avg_dBFS)
         if song_segment.dBFS > -60:
-            song_segment = self.set_loudness(song_segment, avg_dbfs)
+            song_segment = self.set_loudness(song_segment, avg_dBFS)
 
         combined = mic_segment.overlay(song_segment)
         combined.export(os.path.join(self.OUTPUT_FOLDER_NAME, file_name),

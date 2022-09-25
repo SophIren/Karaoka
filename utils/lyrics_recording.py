@@ -61,6 +61,6 @@ class LyricsRecorder:
 
 
 # if __name__ == "__main__":
-#     recorder = LyricsRecorder('../songs/lyrics/One Of Us.txt',
-#                               '../songs/media/One of Us.mp4')
+#     recorder = LyricsRecorder('../songs/lyrics/The Winner Takes It All.txt',
+#                               '../songs/media/The Winner Takes It All.mp4')
 #     recorder.start()

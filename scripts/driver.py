@@ -41,8 +41,8 @@ class Driver:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.done = True
-            if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                self.current_controller.handle_pressed_button(event)
+
+            self.current_controller.handle_events(event)
 
             if self.current_drawer.ui_manager is not None:
                 self.current_drawer.ui_manager.process_events(event)
