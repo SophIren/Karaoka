@@ -1,10 +1,9 @@
 import glob
 import os.path
 import mimetypes
-from pathlib import Path
 from ffpyplayer.player import MediaPlayer
 
-from scripts.recording import Recorder
+from scripts.voice_recording import Recorder
 
 
 class IController:
@@ -45,9 +44,9 @@ class MainMenuController(IController):
 
     @staticmethod
     def lyrics_file_exists(file_name):
-        return Path(
+        return os.path.isfile(
             os.path.join(MainMenuController.SONG_LYRICS_FOLDER_PATH, file_name)
-        ).is_file()
+        )
 
     def start_playing(self):
         song_audio_name = self.drawer.song_selector.get_single_selection()

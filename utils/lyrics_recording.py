@@ -60,7 +60,7 @@ class LyricsRecorder:
         self.output_file.close()
 
 
-if __name__ == "__main__":
-    recorder = LyricsRecorder('../songs/lyrics/Nothing Else Matters.txt',
-                              '../songs/media/Nothing Else Matters.mp4')
-    recorder.start()
+# if __name__ == "__main__":
+#     recorder = LyricsRecorder('../songs/lyrics/One Of Us.txt',
+#                               '../songs/media/One of Us.mp4')
+#     recorder.start()
