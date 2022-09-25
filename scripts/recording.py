@@ -22,6 +22,9 @@ class Recorder:
         self.mic_frames = []
 
     def start_recording(self):
+        self.speaker_frames = []
+        self.mic_frames = []
+
         self.in_device = self.audio.get_default_input_device_info()
         self.in_rec = self.create_stream(self.in_device['index'], False,
                                          self.mic_callback)
@@ -44,18 +47,21 @@ class Recorder:
         return sound.apply_gain(loudness_difference)
 
     def save_overlapped(self, file_name='output.wav'):
-        mic_segment = self.set_loudness(
-            AudioSegment(b''.join(self.mic_frames),
-                         sample_width=self.SAMPLE_WIDTH,
-                         frame_rate=self.FRAME_RATE,
-                         channels=self.CHANNEL_COUNT),
-            target_dbfs=self.VOICE_DBFS)
-        speaker_segment = self.set_loudness(
-            AudioSegment(b''.join(self.speaker_frames),
-                         sample_width=self.SAMPLE_WIDTH,
-                         frame_rate=self.FRAME_RATE,
-                         channels=self.CHANNEL_COUNT),
-            target_dbfs=self.MUSIC_DBFS)
+        mic_segment = AudioSegment(b''.join(self.mic_frames),
+                                   sample_width=self.SAMPLE_WIDTH,
+                                   frame_rate=self.FRAME_RATE,
+                                   channels=self.CHANNEL_COUNT)
+        speaker_segment = AudioSegment(b''.join(self.speaker_frames),
+                                       sample_width=self.SAMPLE_WIDTH,
+                                       frame_rate=self.FRAME_RATE,
+                                       channels=self.CHANNEL_COUNT)
+
+        print(mic_segment.dBFS)
+        print(speaker_segment.dBFS)
+        avg_dbfs = int((max(-100, mic_segment.dBFS) +
+                        max(-100, speaker_segment.dBFS)) / 2)
+        mic_segment = self.set_loudness(mic_segment, avg_dbfs)
+        speaker_segment = self.set_loudness(speaker_segment, avg_dbfs)
 
         combined = mic_segment.overlay(speaker_segment)
         combined.export(file_name, format='wav')
