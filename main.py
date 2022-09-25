@@ -1,5 +1,5 @@
 import pygame
-from driver import Driver
+from scripts.driver import Driver
 
 
 def main():
