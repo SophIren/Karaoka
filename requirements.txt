@@ -1,0 +1,8 @@
+pygame~=2.1.2
+numpy~=1.21.4
+opencv-python~=4.6.0.66
+ffpyplayer~=4.3.5
+PyAudio~=0.2.11
+pydub~=0.25.1
+ffmpeg~=1.4
+https://github.com/intxcc/pyaudio_portaudio
