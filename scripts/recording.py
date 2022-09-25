@@ -9,6 +9,9 @@ class Recorder:
     SAMPLE_WIDTH = 2
     CHANNEL_COUNT = 2
 
+    VOICE_DBFS = -13
+    MUSIC_DBFS = -25
+
     def __init__(self):
         self.audio = pyaudio.PyAudio()
         self.out_rec = None
@@ -19,9 +22,6 @@ class Recorder:
         self.mic_frames = []
 
     def start_recording(self):
-        self.speaker_frames = []
-        self.mic_frames = []
-
         self.in_device = self.audio.get_default_input_device_info()
         self.in_rec = self.create_stream(self.in_device['index'], False,
                                          self.mic_callback)
@@ -38,15 +38,24 @@ class Recorder:
             self.in_rec.stop_stream()
             self.in_rec.close()
 
+    @staticmethod
+    def set_loudness(sound, target_dbfs=-20):
+        loudness_difference = target_dbfs - sound.dBFS
+        return sound.apply_gain(loudness_difference)
+
     def save_recorded_frames(self, file_name='output.wav'):
-        mic_segment = AudioSegment(b''.join(self.mic_frames),
-                                   sample_width=self.SAMPLE_WIDTH,
-                                   frame_rate=self.FRAME_RATE,
-                                   channels=self.CHANNEL_COUNT)
-        speaker_segment = AudioSegment(b''.join(self.speaker_frames),
-                                       sample_width=self.SAMPLE_WIDTH,
-                                       frame_rate=self.FRAME_RATE,
-                                       channels=self.CHANNEL_COUNT)
+        mic_segment = self.set_loudness(
+            AudioSegment(b''.join(self.mic_frames),
+                         sample_width=self.SAMPLE_WIDTH,
+                         frame_rate=self.FRAME_RATE,
+                         channels=self.CHANNEL_COUNT),
+            target_dbfs=self.VOICE_DBFS)
+        speaker_segment = self.set_loudness(
+            AudioSegment(b''.join(self.speaker_frames),
+                         sample_width=self.SAMPLE_WIDTH,
+                         frame_rate=self.FRAME_RATE,
+                         channels=self.CHANNEL_COUNT),
+            target_dbfs=self.MUSIC_DBFS)
 
         combined = mic_segment.overlay(speaker_segment)
         combined.export(file_name, format='wav')
