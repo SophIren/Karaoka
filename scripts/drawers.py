@@ -35,7 +35,6 @@ class PlayDrawer(IDraw):
         self.background = pygame.image.load(self.BACKGROUND_PATH)
         self.window_size = self.background.get_size()
 
-        self.lyrics_file = None
         self.back_button = None
 
     def init_gui(self):
@@ -46,9 +45,6 @@ class PlayDrawer(IDraw):
             text='BACK',
             manager=self.ui_manager)
         self.buttons['BACK'] = self.back_button
-
-    def update_playing_lyrics(self, lyrics_file):
-        self.lyrics_file = lyrics_file
 
     def draw(self):
         self.display.blit(self.background, (0, 0))

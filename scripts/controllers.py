@@ -84,7 +84,6 @@ class PlayController(IController):
     def update_playing_song(self, audio_path, lyrics_path):
         self.audio_path = audio_path
         self.lyrics_file = open(lyrics_path, encoding='utf-8')
-        self.drawer.update_playing_lyrics(self.lyrics_file)
 
     def activate(self):
         super(PlayController, self).activate()

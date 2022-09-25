@@ -54,6 +54,6 @@ class Driver:
         self.current_controller.activate()
 
     def start_playing(self, song_audio_path, song_lyrics_path):
-        self.play_controller.update_playing_song(
-            song_audio_path, song_lyrics_path)
+        self.play_controller.update_playing_song(song_audio_path,
+                                                 song_lyrics_path)
         self.change_state('PLAY')

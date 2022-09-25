@@ -2,7 +2,7 @@ import pygame
 import time
 import os
 
-from scripts.playing import VideoPlayer
+from utils.playing import VideoPlayer
 
 
 class LyricsRecorder:
