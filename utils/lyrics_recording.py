@@ -61,6 +61,6 @@ class LyricsRecorder:
 
 
 if __name__ == "__main__":
-    recorder = LyricsRecorder('../songs/lyrics/Cheri Cheri Lady.txt',
-                              '../songs/media/Cheri Cheri Lady.mp4')
+    recorder = LyricsRecorder('../songs/lyrics/Nothing Else Matters.txt',
+                              '../songs/media/Nothing Else Matters.mp4')
     recorder.start()

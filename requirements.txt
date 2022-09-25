@@ -5,4 +5,3 @@ ffpyplayer~=4.3.5
 PyAudio~=0.2.11
 pydub~=0.25.1
 ffmpeg~=1.4
-https://github.com/intxcc/pyaudio_portaudio
