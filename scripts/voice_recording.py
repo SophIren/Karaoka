@@ -1,12 +1,17 @@
 import pyaudio
 from pydub import AudioSegment
+import os
+import glob
 
 
 class Recorder:
+    OUTPUT_FOLDER_NAME = 'recordings'
     DEFAULT_FRAMES = 512
 
     def __init__(self, song_path):
         self.song_path = song_path
+        if not os.path.exists(self.OUTPUT_FOLDER_NAME):
+            os.makedirs(self.OUTPUT_FOLDER_NAME)
 
         self.audio = pyaudio.PyAudio()
 
@@ -54,14 +59,26 @@ class Recorder:
         return sound.apply_gain(loudness_difference)
 
     @staticmethod
-    def get_average_dbfs(dbfs1, dbfs2):
-        if dbfs1 < -65:
-            return dbfs2
-        if dbfs2 < -65:
-            return dbfs1
-        return int((dbfs1 + dbfs2) / 2)
+    def get_average_dbfs(dBFS1, dBFS2):
+        if dBFS1 < -65:
+            return dBFS2
+        if dBFS2 < -65:
+            return dBFS1
+        return int((dBFS1 + dBFS2) / 2)
 
-    def save_overlapped(self, file_name='output.wav'):
+    @staticmethod
+    def get_output_file_name_from_input(input_file_name):
+        no_ext_name = os.path.splitext(
+            os.path.basename(input_file_name)
+        )[0]
+        recordings_made = glob.glob(os.path.join(Recorder.OUTPUT_FOLDER_NAME,
+                                                 f'{no_ext_name}_?.wav'))
+        return f'{no_ext_name}_{len(recordings_made)}.wav'
+
+    def save_overlapped(self, file_name=None):
+        if file_name is None:
+            file_name = self.get_output_file_name_from_input(self.song_path)
+
         mic_segment = AudioSegment(
             b''.join(self.mic_frames),
             sample_width=pyaudio.get_sample_size(pyaudio.paInt16),
@@ -77,7 +94,8 @@ class Recorder:
             song_segment = self.set_loudness(song_segment, avg_dbfs)
 
         combined = mic_segment.overlay(song_segment)
-        combined.export(file_name, format='wav')
+        combined.export(os.path.join(self.OUTPUT_FOLDER_NAME, file_name),
+                        format='wav')
 
 # if __name__ == "__main__":
 #     rec = Recorder()
