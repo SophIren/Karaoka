@@ -6,7 +6,9 @@ from pydub import AudioSegment
 class Recorder:
     DEFAULT_FRAMES = 512
 
-    def __init__(self):
+    def __init__(self, song_path):
+        self.song_path = song_path
+
         self.audio = pyaudio.PyAudio()
 
         self.out_rec = None
@@ -37,6 +39,10 @@ class Recorder:
             input_device_index=self.in_device['index'],
             stream_callback=self.mic_callback)
 
+    def mic_callback(self, in_data, frame_count, time_info, status):
+        self.mic_frames.append(in_data)
+        return None, pyaudio.paContinue
+
     def stop_recording(self):
         if self.in_stream is None:
             return
@@ -62,11 +68,8 @@ class Recorder:
             sample_width=pyaudio.get_sample_size(pyaudio.paInt16),
             frame_rate=self.frame_rate,
             channels=self.channels_count)
-        song_segment = AudioSegment.from_file(
-            'songs/media/Nothing Else Matters.mp4')
+        song_segment = AudioSegment.from_file(self.song_path)
 
-        print(mic_segment.dBFS)
-        print(song_segment.dBFS)
         avg_dbfs = self.get_average_dbfs(mic_segment.dBFS, song_segment.dBFS)
         mic_segment = self.set_loudness(mic_segment, avg_dbfs)
         song_segment = self.set_loudness(song_segment, avg_dbfs)
@@ -74,16 +77,11 @@ class Recorder:
         combined = mic_segment.overlay(song_segment)
         combined.export(file_name, format='wav')
 
-    def mic_callback(self, in_data, frame_count, time_info, status):
-        self.mic_frames.append(in_data)
-        return None, pyaudio.paContinue
-
-
-if __name__ == "__main__":
-    rec = Recorder()
-    rec.start_recording()
-    for _ in range(100):
-        time.sleep(1)
-        print(_)
-    rec.stop_recording()
-    rec.save_overlapped()
+# if __name__ == "__main__":
+#     rec = Recorder()
+#     rec.start_recording()
+#     for _ in range(100):
+#         time.sleep(1)
+#         print(_)
+#     rec.stop_recording()
+#     rec.save_overlapped()

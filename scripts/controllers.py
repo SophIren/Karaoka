@@ -79,7 +79,7 @@ class PlayController(IController):
         self.audio_path = None
         self.lyrics_file = None
         self.media_player = None
-        self.recorder = Recorder()
+        self.recorder = None
 
     def update_playing_song(self, audio_path, lyrics_path):
         self.audio_path = audio_path
@@ -88,6 +88,7 @@ class PlayController(IController):
     def activate(self):
         super(PlayController, self).activate()
         self.media_player = MediaPlayer(self.audio_path)
+        self.recorder = Recorder(self.audio_path)
         self.recorder.start_recording()
 
     def deactivate(self):
