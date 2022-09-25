@@ -7,46 +7,51 @@ class IDraw:
 
     def __init__(self):
         self.ui_manager = None
-        self.display = pygame.display.get_surface()
-        self.update_ui_manager()
-        self.buttons = {}
+        self.display = None
+        self.window_size = (800, 600)
 
-    def update_ui_manager(self):
-        self.ui_manager = pygame_gui.UIManager(pygame.display.get_window_size(),
-                                               self.GUI_THEME_PATH)
+        self.buttons = {}
 
     def draw(self):
         pass
 
-    def fit_display(self):
-        self.update_ui_manager()
+    def init_gui(self):
+        pass
+
+    def activate(self):
+        pygame.display.set_mode(self.window_size)
+        self.display = pygame.display.get_surface()
+        self.ui_manager = pygame_gui.UIManager(self.window_size,
+                                               self.GUI_THEME_PATH)
+        self.init_gui()
 
 
 class PlayDrawer(IDraw):
+    BACKGROUND_PATH = 'GUI/bg.jpg'
+
     def __init__(self):
         super().__init__()
 
-        self.video = None
+        self.background = pygame.image.load(self.BACKGROUND_PATH)
+        self.window_size = self.background.get_size()
+
+        self.lyrics_file = None
         self.back_button = None
 
-    def fit_display(self):
-        x_size, y_size = self.video.get_size()
-
-        pygame.display.set_mode((x_size, y_size))
-        self.update_ui_manager()
-
+    def init_gui(self):
         self.back_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((x_size - 135, y_size - 50), (135, 50)),
+            relative_rect=pygame.Rect(
+                (self.window_size[0] - 135, self.window_size[1] - 50),
+                (135, 50)),
             text='BACK',
             manager=self.ui_manager)
         self.buttons['BACK'] = self.back_button
 
-    def update_playing_song(self, video):
-        self.video = video
-        # self.video.set_size(self.display.get_size())
+    def update_playing_lyrics(self, lyrics_file):
+        self.lyrics_file = lyrics_file
 
     def draw(self):
-        self.video.draw_to(self.display, (0, 0))
+        self.display.blit(self.background, (0, 0))
         self.ui_manager.draw_ui(self.display)
 
 
@@ -57,17 +62,19 @@ class MainMenuDrawer(IDraw):
         super().__init__()
 
         self.background = pygame.image.load(self.BACKGROUND_PATH)
-        pygame.display.set_mode(self.background.get_size())
-        self.update_ui_manager()
+        self.window_size = self.background.get_size()
 
+        self.general_layout = None
+        self.play_button = None
+        self.refresh_button = None
+        self.song_selector = None
+
+    def init_gui(self):
         self.general_layout = pygame_gui.core.UIContainer(
             relative_rect=pygame.Rect((450, 100, 400, 550)),
             manager=self.ui_manager
         )
 
-        self.play_button = None
-        self.refresh_button = None
-        self.song_selector = None
         self.init_song_selector()
         self.init_buttons()
 
@@ -112,9 +119,6 @@ class MainMenuDrawer(IDraw):
 
         self.buttons['PLAY'] = self.play_button
         self.buttons['REFRESH'] = self.refresh_button
-
-    def fit_display(self):
-        pygame.display.set_mode(self.background.get_size())
 
     def update_song_selector(self, song_names):
         self.song_selector.set_dimensions(

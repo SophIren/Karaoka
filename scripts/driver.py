@@ -8,8 +8,8 @@ from scripts.controllers import PlayController, MainMenuController
 class Driver:
     def __init__(self):
         main_menu_drawer = MainMenuDrawer()
-        self.main_menu_controller = MainMenuController(self,
-                                                       main_menu_drawer)
+        self.main_menu_controller = MainMenuController(
+            self, main_menu_drawer)
 
         play_drawer = PlayDrawer()
         self.play_controller = PlayController(self, play_drawer)
@@ -18,10 +18,9 @@ class Driver:
             "MAIN_MENU": (main_menu_drawer, self.main_menu_controller),
             "PLAY": (play_drawer, self.play_controller)
         }
-        self.current_state_name = "MAIN_MENU"
-        self.current_drawer, self.current_controller = \
-            self.states[self.current_state_name]
-        self.current_ui_manager = self.current_drawer.ui_manager
+
+        self.current_drawer, self.current_controller = None, None
+        self.change_state("MAIN_MENU")
 
         self.done = False
         self.clock = pygame.time.Clock()
@@ -35,8 +34,8 @@ class Driver:
             self.current_drawer.draw()
 
             pygame.display.update()
-            if self.current_ui_manager is not None:
-                self.current_ui_manager.update(time_delta)
+            if self.current_drawer.ui_manager is not None:
+                self.current_drawer.ui_manager.update(time_delta)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -45,24 +44,16 @@ class Driver:
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 self.current_controller.handle_pressed_button(event)
 
-            if self.current_ui_manager is not None:
-                self.current_ui_manager.process_events(event)
+            if self.current_drawer.ui_manager is not None:
+                self.current_drawer.ui_manager.process_events(event)
 
     def change_state(self, state_name):
-        self.current_state_name = state_name
-        self.current_drawer, self.current_controller = \
-            self.states[self.current_state_name]
-        self.current_ui_manager = self.current_drawer.ui_manager
+        if self.current_controller is not None:
+            self.current_controller.deactivate()
+        self.current_drawer, self.current_controller = self.states[state_name]
+        self.current_controller.activate()
 
-    def start_playing(self, song_path):
-        try:
-            self.play_controller.update_playing_song(song_path)
-            self.play_controller.play_video()
-            self.play_controller.record_audio()
-            self.change_state('PLAY')
-        except ZeroDivisionError:  # Invalid file
-            pass
-
-    def stop_playing(self):
-        self.change_state('MAIN_MENU')
-        self.main_menu_controller.drawer.fit_display()
+    def start_playing(self, song_audio_path, song_lyrics_path):
+        self.play_controller.update_playing_song(
+            song_audio_path, song_lyrics_path)
+        self.change_state('PLAY')
