@@ -43,7 +43,7 @@ class Driver:
         self.current_controller = self.states[state_name]
         self.current_controller.activate()
 
-    def start_playing(self, song_audio_path, song_lyrics_path):
+    def menu_to_playing_transfer(self, song_audio_path, song_lyrics_path):
         self.play_controller.update_chosen_song(song_audio_path,
                                                 song_lyrics_path)
         self.change_state('PLAY')

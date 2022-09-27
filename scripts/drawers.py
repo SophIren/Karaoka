@@ -28,12 +28,18 @@ class IDraw:
 
 class PlayDrawer(IDraw):
     BACKGROUND_PATH = 'GUI/bg.jpg'
+    FONT_PATH = 'C:/Windows/Fonts/comic.ttf'
+    FONT_SIZE = 25
+    FONT_COLOR = (2, 24, 43)
+    CHOSEN_FONT_COLOR = (255, 159, 28)
 
     def __init__(self):
         super().__init__()
 
         self.background = pygame.image.load(self.BACKGROUND_PATH)
         self.window_size = self.background.get_size()
+
+        self.font = pygame.font.Font(self.FONT_PATH, self.FONT_SIZE)
 
         self.back_button = None
 
@@ -49,8 +55,19 @@ class PlayDrawer(IDraw):
     def draw(self, lines=None):
         if lines is None:
             lines = []
+
         self.display.blit(self.background, (0, 0))
+        self.draw_lines(lines)
         self.ui_manager.draw_ui(self.display)
+
+    def draw_lines(self, lines):
+        i = 0
+        for line in lines:
+            font = self.font.render(
+                line, True,
+                self.CHOSEN_FONT_COLOR if i == 0 else self.FONT_COLOR)
+            self.display.blit(font, (350, 280 + i * 50))
+            i += 1
 
 
 class MainMenuDrawer(IDraw):

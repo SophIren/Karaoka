@@ -1,6 +1,7 @@
 import glob
 import os.path
 import mimetypes
+import time
 
 import pygame_gui
 import vlc
@@ -33,8 +34,6 @@ class IController:
         if self.drawer.ui_manager is not None:
             self.drawer.ui_manager.update(time_delta)
 
-        self.drawer.draw()
-
 
 class MainMenuController(IController):
     SONG_MEDIA_FOLDER_PATH = 'songs/media/'
@@ -45,7 +44,7 @@ class MainMenuController(IController):
 
     def handle_event(self, event):
         super(MainMenuController, self).handle_event(event)
-        
+
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == self.drawer.buttons['PLAY']:
                 self.start_playing()
@@ -75,7 +74,7 @@ class MainMenuController(IController):
         if not self.lyrics_file_exists(song_lyrics_name):
             return
 
-        self.driver.start_playing(
+        self.driver.menu_to_playing_transfer(
             os.path.join(self.SONG_MEDIA_FOLDER_PATH, song_audio_name),
             os.path.join(self.SONG_LYRICS_FOLDER_PATH, song_lyrics_name)
         )
@@ -89,21 +88,31 @@ class MainMenuController(IController):
                               glob.glob(self.SONG_MEDIA_FOLDER_PATH + '/*')))
         self.drawer.update_song_selector(song_names)
 
+    def tick(self):
+        super(MainMenuController, self).tick()
+
+        self.drawer.draw()
+
 
 class PlayController(IController):
+    LINES_SHOWN_COUNT = 3
+
     def __init__(self, driver, drawer):
         super().__init__(driver, drawer)
 
         self.audio_path = None
         self.media_player = None
         self.recorder = None
+        self.lyrics_path = None
         self.lt_parser = None
+
+        self.start = None
 
         self.instance = vlc.Instance('--no-video')
         self.media_player = self.instance.media_player_new()
 
     def update_chosen_song(self, audio_path, lyrics_path):
-        self.lt_parser = LTParser(lyrics_path)
+        self.lyrics_path = lyrics_path
 
         self.audio_path = audio_path
         media = self.instance.media_new(self.audio_path)
@@ -111,6 +120,9 @@ class PlayController(IController):
 
     def activate(self):
         super(PlayController, self).activate()
+
+        self.start = time.time()
+        self.lt_parser = LTParser(self.lyrics_path)
 
         self.media_player.play()
 
@@ -121,6 +133,15 @@ class PlayController(IController):
         self.media_player.stop()
         self.recorder.save_overlapped()
         self.recorder.stop_recording()
+
+    def tick(self):
+        super(PlayController, self).tick()
+
+        passed_time = time.time() - self.start
+        self.lt_parser.actualize_time(passed_time)
+        self.drawer.draw(
+            self.lt_parser.get_next_n_lines(self.LINES_SHOWN_COUNT)
+        )
 
     def handle_event(self, event):
         super(PlayController, self).handle_event(event)
