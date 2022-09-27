@@ -46,7 +46,9 @@ class PlayDrawer(IDraw):
             manager=self.ui_manager)
         self.buttons['BACK'] = self.back_button
 
-    def draw(self):
+    def draw(self, lines=None):
+        if lines is None:
+            lines = []
         self.display.blit(self.background, (0, 0))
         self.ui_manager.draw_ui(self.display)
 
