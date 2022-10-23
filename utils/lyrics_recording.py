@@ -60,7 +60,7 @@ class LyricsRecorder:
         self.output_file.close()
 
 
-# if __name__ == "__main__":
-#     recorder = LyricsRecorder('../songs/lyrics/The Winner Takes It All.txt',
-#                               '../songs/media/The Winner Takes It All.mp4')
-#     recorder.start()
+if __name__ == "__main__":
+    recorder = LyricsRecorder('../songs/lyrics/The Winner Takes It All.txt',
+                              '../songs/media/The Winner Takes It All.mp4')
+    recorder.start()

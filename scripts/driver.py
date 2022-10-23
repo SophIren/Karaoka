@@ -1,8 +1,7 @@
 import pygame
-import pygame_gui
 
-from scripts.drawers import PlayDrawer, MainMenuDrawer
 from scripts.controllers import PlayController, MainMenuController
+from scripts.drawers import PlayDrawer, MainMenuDrawer
 
 
 class Driver:

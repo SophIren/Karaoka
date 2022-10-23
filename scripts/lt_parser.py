@@ -1,26 +1,32 @@
 class LTParser:
-    SPLITTER = '~'
+    DELIMITER = '~'
     ENCODING = 'utf-8'
 
     def __init__(self, file_name):
         self.lyrics = self._parse(file_name)
         self.current_time = 0
-        self.pointer = 0
+        self.pointer = -1
 
     @staticmethod
     def _parse(file_name):
         lyrics = []
         for line in open(file_name, encoding=LTParser.ENCODING):
-            timestamp, verse = line.split(LTParser.SPLITTER)
+            timestamp, verse = line.split(LTParser.DELIMITER)
             lyrics.append({
-                'text': verse,
+                'text': verse.strip(),
                 'time': float(timestamp)
             })
-        return lyrics
+        return sorted(lyrics, key=lambda lyric: lyric['time'])
 
     def actualize_time(self, time):
+        if not self.lyrics:
+            return
         if time < self.current_time:
             return
+        if time >= self.lyrics[-1]['time']:
+            self.pointer = len(self.lyrics) - 1
+            return
+
         self.current_time = time
 
         for i in range(max(0, self.pointer), len(self.lyrics)):
