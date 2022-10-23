@@ -1,26 +1,4 @@
-import pytest
-
-from scripts.controllers import PlayController
-
-
-@pytest.fixture(autouse=True)
-def init(mocker, mocked_lt_parser, mocked_recorder):
-    mocker.patch('scripts.controllers.LTParser', mocked_lt_parser)
-    mocker.patch('scripts.controllers.Recorder', mocked_recorder)
-
-
-@pytest.fixture()
-def play_controller(mocked_driver, mocked_drawer, mocked_media_player):
-    play_controller = PlayController(mocked_driver(), mocked_drawer())
-    play_controller.media_player = mocked_media_player()
-    play_controller.activate()
-
-    return play_controller
-
-
 def test_play_controller_activate(play_controller, mocked_lt_parser):
-    play_controller.activate()
-
     assert isinstance(play_controller.lt_parser, mocked_lt_parser)
     assert play_controller.media_player.is_playing
     assert play_controller.recorder.is_recording

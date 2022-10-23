@@ -3,17 +3,32 @@ import pytest
 
 @pytest.fixture()
 def mocked_drawer():
+    class MockedSongSelector:
+        def __init__(self):
+            pass
+
+        def get_single_selection(self):
+            open('lolkek.mp3', 'w')
+            open('lolkek.lt', 'w')
+            return 'lolkek.mp3'
+
     class MockedDrawer:
         def __init__(self):
             self.drawn = False
             self.activated = False
             self.ui_manager = None
+            self.song_selector_updated = False
+
+            self.song_selector = MockedSongSelector()
 
         def draw(self, *args):
             self.drawn = True
 
         def activate(self):
             self.activated = True
+
+        def update_song_selector(self, song_names):
+            self.song_selector_updated = True
 
     return MockedDrawer
 
@@ -22,7 +37,12 @@ def mocked_drawer():
 def mocked_driver():
     class MockedDriver:
         def __init__(self):
-            pass
+            self.song_audio_path = None
+            self.song_lyrics_path = None
+
+        def menu_to_playing_transfer(self, song_audio_path, song_lyrics_path):
+            self.song_audio_path = song_audio_path
+            self.song_lyrics_path = song_lyrics_path
 
     return MockedDriver
 
