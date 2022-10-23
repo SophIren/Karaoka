@@ -18,11 +18,11 @@ class Driver:
         }
 
         self.current_controller = None
-        self.change_state("MAIN_MENU")
-
         self.done = False
 
     def main(self):
+        self.change_state("MAIN_MENU")
+
         while not self.done:
             self.handle_events()
             self.current_controller.tick()

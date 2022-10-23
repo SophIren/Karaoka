@@ -86,7 +86,7 @@ class Recorder:
             channels=self.channels_count)
         song_segment = AudioSegment.from_file(self.song_path)
 
-        print(mic_segment.dBFS, song_segment.dBFS)
+        # print(mic_segment.dBFS, song_segment.dBFS)
         avg_dBFS = self.get_average_dbfs(mic_segment.dBFS, song_segment.dBFS)
         if mic_segment.dBFS > -60:
             mic_segment = self.set_loudness(mic_segment, avg_dBFS)
