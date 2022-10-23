@@ -4,22 +4,9 @@ from scripts.driver import Driver
 
 
 @pytest.fixture(autouse=True)
-def init(mocker):
-    class MockedController:
-        def __init__(self, driver, drawer):
-            self.activated = False
-            self.song_audio_path = None
-            self.song_lyrics_path = None
-
-        def activate(self):
-            self.activated = True
-
-        def update_chosen_song(self, song_audio_path, song_lyrics_path):
-            self.song_audio_path = song_audio_path
-            self.song_lyrics_path = song_lyrics_path
-
-    mocker.patch('scripts.driver.MainMenuController', MockedController)
-    mocker.patch('scripts.driver.PlayController', MockedController)
+def init(mocker, mocked_controller):
+    mocker.patch('scripts.driver.MainMenuController', mocked_controller)
+    mocker.patch('scripts.driver.PlayController', mocked_controller)
     mocker.patch('scripts.driver.MainMenuDrawer', lambda: 'MMDrawer')
     mocker.patch('scripts.driver.PlayDrawer', lambda: 'PlayDrawer')
 
