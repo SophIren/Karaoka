@@ -8,6 +8,7 @@ ___
 ### Требования
 - Python>=3.x.x
 - vlc
+- portaudio - при установке pyaudio через pip на linux могут быть проблемы (см. доку portaudio) 
 - requirements.txt
 ___
 ### Как пользоваться
